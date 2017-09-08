@@ -2,6 +2,9 @@ import os
 import numpy as np
 import pandas as pd
 
+from src.gpu_utils import setup_one_gpu
+setup_one_gpu()
+
 import tensorflow as tf
 from keras.datasets import mnist
 from keras.layers import Input
@@ -126,7 +129,7 @@ for epoch in range(niter):
         if gen_iterations % 500 == 0:
             plt.imshow(merge_imgs(fake, 10, 10, transfrom=False)[0])
             plt.axis('off')
-            plt.savefig(os.path.join('results', 'imgs', 'WGAN_img_iter_%d.png' % i))
+            plt.savefig(os.path.join('results', 'imgs', 'DCGAN_img_iter_%d.png' % i))
 
         noise = np.random.normal(size=(batch_size, nz))
         errG, = netG_train([noise])
@@ -136,7 +139,9 @@ for epoch in range(niter):
 
 store_name = os.path.join('results', 'logs', 'DCGAN')
 records = pd.DataFrame(records, columns=['D loss', 'G loss', 'D real', 'D fake'])
-classifier_log = pd.DataFrame({'Confidence': confidence_log, 'Entropy': class_entropy})
+classifier_log = pd.DataFrame({'Confidence': confidence_log,
+                               'Entropy': class_entropy,
+                               'Inception Score': inceps_score_log})
 records.to_csv(store_name + '_records.csv')
 classifier_log.to_csv(store_name + '_classifier.csv')
 netG.save_weights(store_name + '_netG.h5')
