@@ -1,4 +1,4 @@
-from src.gan import DCGAN_G, DCGAN_D
+from src.nn import DCGAN_G, DCGAN_D
 
 nc = 1
 nz = 100
