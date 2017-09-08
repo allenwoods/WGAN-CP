@@ -103,3 +103,7 @@ ENV/
 # floyd settings
 .floydexpt
 .floydignore
+
+# Pycharm
+.idea/
+/.idea
