@@ -130,6 +130,7 @@ for epoch in range(niter):
                      errG, errD, errD_real, errD_fake,
                      mean_confidence, class_entropy))
 
+        if gen_iterations % 500 == 0:
             plt.imshow(merge_imgs(fake, 10, 10, transfrom=False))
             plt.axis('off')
             plt.savefig(os.path.join('results', 'imgs', 'WGAN_img_iter_%d.png' % i))
