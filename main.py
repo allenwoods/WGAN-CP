@@ -116,15 +116,17 @@ for epoch in range(niter):
             errD_real, errD_fake, errD = netD_train([real_data, noise, ϵ])
 
         if gen_iterations % 50 == 0:
-            print('[%d/%d][%d/%d][%d] '
-                  'Loss_G:%f \t Loss_D:%f \t D_real:%f \t D_fake:%f \t'
-                  % (epoch, niter, i, batches, gen_iterations,
-                     errG, errD, errD_real, errD_fake))
             fake = netG.predict(fixed_noise)
             mean_confidence, class_entropy, score_mean, score_std = get_inception_score(fake, mnist_classifier)
             inceps_score_log.append((score_mean, score_std))
             confidence_log.append(mean_confidence)
             class__log.append(class_entropy)
+            print('[%d/%d][%d/%d][%d]\n'
+                  'Loss_G:%f \t Loss_D:%f \t D_real:%f \t D_fake:%f \n'
+                  'Mean Confidence:%f \t Entropy:%f.'
+                  % (epoch, niter, i, batches, gen_iterations,
+                     errG, errD, errD_real, errD_fake,
+                     mean_confidence, class_entropy))
 
             plt.imshow(merge_imgs(fake, 10, 10, transfrom=True))
             plt.axis('off')
