@@ -79,8 +79,5 @@ def DCGAN_D(isize, nc, ndf, wgan=True):
                    )(_)
     outputs = Flatten()(_)
     if not wgan:
-        outputs = Dense(128)(outputs)
-        outputs = BatchNormalization()(outputs)
-        outputs = LeakyReLU(0.2)(outputs)
         outputs = Dense(2, activation='softmax')(outputs)
     return Model(inputs=inputs, outputs=outputs)
