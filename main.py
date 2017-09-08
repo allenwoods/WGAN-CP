@@ -1,6 +1,8 @@
 import os
 import numpy as np
 import pandas as pd
+
+import tensorflow as tf
 from keras.datasets import mnist
 from keras.layers import Input
 from keras import backend as K
@@ -17,6 +19,14 @@ import seaborn as sns
 sns.set(context='paper', style='white', palette='Set2', font_scale=1, color_codes=False,
         rc={'font.family': 'sans-serif', 'font.serif': ['Palatino'], 'font.sans-serif': ['DejaVu Sans'],
             'text.usetex': True})
+
+# Prevent  Resource exhausted:OOM error
+config = tf.ConfigProto()
+config.gpu_options.allow_growth=True
+sess = tf.Session(config=config)
+K.set_session(sess)
+K.set_image_data_format('channels_first') # (channel, row, col)
+K.set_image_dim_ordering('th')
 
 # Load Datasets
 (mnist_x_train, mnist_y_train), (mnist_x_test, mnist_y_test) = mnist.load_data()
