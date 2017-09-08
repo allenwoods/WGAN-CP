@@ -134,7 +134,7 @@ for epoch in range(niter):
 
         records.append([errG, errD, errD_real, errD_fake])
 
-store_name = os.path.join('results', 'logs', 'ImprovedWGAN')
+store_name = os.path.join('results', 'logs', 'DCGAN')
 records = pd.DataFrame(records, columns=['D loss', 'G loss', 'D real', 'D fake'])
 classifier_log = pd.DataFrame({'Confidence': confidence_log, 'Entropy': class_entropy})
 records.to_csv(store_name + '_records.csv')
