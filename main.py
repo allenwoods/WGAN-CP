@@ -13,6 +13,8 @@ from src.classifier import get_mnist_classifier
 from src.inception_score import get_inception_score
 from src.image_process import merge_imgs
 
+import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib import pyplot as plt
 import seaborn as sns
 
@@ -22,10 +24,10 @@ sns.set(context='paper', style='white', palette='Set2', font_scale=1, color_code
 
 # Prevent  Resource exhausted:OOM error
 config = tf.ConfigProto()
-config.gpu_options.allow_growth=True
+config.gpu_options.allow_growth = True
 sess = tf.Session(config=config)
 K.set_session(sess)
-K.set_image_data_format('channels_first') # (channel, row, col)
+K.set_image_data_format('channels_first')  # (channel, row, col)
 K.set_image_dim_ordering('th')
 
 # Load Datasets
@@ -141,7 +143,7 @@ for epoch in range(niter):
 store_name = os.path.join('results', 'logs', 'ImprovedWGAN')
 records = pd.DataFrame(records, columns=['D loss', 'G loss', 'D real', 'D fake'])
 classifier_log = pd.DataFrame({'Confidence': confidence_log, 'Entropy': class_entropy})
-records.to_csv(store_name+'_records.csv')
-classifier_log.to_csv(store_name+'_classifier.csv')
-netG.save_weights(store_name+'_netG.h5')
-netD.save_weights(store_name+'_netD.h5')
+records.to_csv(store_name + '_records.csv')
+classifier_log.to_csv(store_name + '_classifier.csv')
+netG.save_weights(store_name + '_netG.h5')
+netD.save_weights(store_name + '_netD.h5')
