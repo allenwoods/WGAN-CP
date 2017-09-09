@@ -9,9 +9,9 @@ import tensorflow as tf
 from keras.datasets import mnist
 from keras.layers import Input
 from keras import backend as K
-from keras.optimizers import Adam
+from keras.optimizers import Adam, SGD
 from keras.utils import to_categorical
-from src.nn import DCGAN_G, DCGAN_D
+from src.nn import WGAN_G, WGAN_D, DCGAN_G, DCGAN_D
 from src.classifier import get_mnist_classifier
 from src.inception_score import get_inception_score
 from src.image_process import merge_imgs
@@ -55,8 +55,8 @@ batch_size = 100
 lr_d = 1e-4
 lr_g = 1e-4
 
-netG = DCGAN_G(img_size, nz, nc, ngf)
-netD = DCGAN_D(img_size, nc, ndf, wgan=False)
+netG = DCGAN_G()
+netD = DCGAN_D()
 
 # Define optimization
 netD_real_input = Input(shape=(nc, img_size, img_size))
@@ -74,11 +74,11 @@ g_loss = -K.mean(K.log(loss_fake+K.epsilon()))
 d_loss = -K.mean(K.log(1 - loss_fake) + .1 * K.log(1 - loss_real) + .9 * K.log(loss_real+K.epsilon()))
 
 # Define training function
-d_training_updates = Adam(lr=lr_d, beta_1=0.0, beta_2=0.9).get_updates(netD.trainable_weights, [], d_loss)
+d_training_updates = SGD(lr=0.0005, momentum=0.9, nesterov=True).get_updates(netD.trainable_weights, [], d_loss)
 netD_train = K.function([netD_real_input, noisev, ϵ_input],
                         [loss_real, loss_fake, d_loss],
                         d_training_updates)
-g_training_updates = Adam(lr=lr_g, beta_1=0.0, beta_2=0.9).get_updates(netG.trainable_weights, [], g_loss)
+g_training_updates = SGD(lr=0.0005, momentum=0.9, nesterov=True).get_updates(netG.trainable_weights, [], g_loss)
 netG_train = K.function([noisev], [g_loss], g_training_updates)
 
 # Define Logs and Parameters

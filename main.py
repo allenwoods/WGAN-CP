@@ -12,7 +12,7 @@ from keras.layers import Input
 from keras import backend as K
 from keras.optimizers import Adam
 from keras.utils import to_categorical
-from src.nn import DCGAN_G, DCGAN_D
+from src.nn import WGAN_G, WGAN_D
 from src.classifier import get_mnist_classifier
 from src.inception_score import get_inception_score
 from src.image_process import merge_imgs
@@ -56,8 +56,8 @@ batch_size = 100
 lr_d = 1e-4
 lr_g = 1e-4
 
-netG = DCGAN_G(img_size, nz, nc, ngf)
-netD = DCGAN_D(img_size, nc, ndf)
+netG = WGAN_G(img_size, nz, nc, ngf)
+netD = WGAN_D(img_size, nc, ndf)
 
 # Define optimization
 netD_real_input = Input(shape=(nc, img_size, img_size))
