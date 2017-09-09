@@ -63,10 +63,6 @@ netD_real_input = Input(shape=(nc, img_size, img_size))
 noisev = Input(shape=(nz,))
 netD_fake_input = netG(noisev)
 
-ϵ_input = K.placeholder(shape=(None, 1, 1, 1))
-netD_mixed_input = Input(shape=(nc, img_size, img_size),
-                         tensor=ϵ_input * netD_real_input + (1 - ϵ_input) * netD_fake_input)
-
 loss_real = netD(netD_real_input)
 loss_fake = netD(netD_fake_input)
 
@@ -75,11 +71,11 @@ d_loss = -K.mean(K.log(1 - loss_fake) + .1 * K.log(1 - loss_real) + .9 * K.log(l
 
 # Define training function
 d_training_updates = SGD(lr=0.0005, momentum=0.9, nesterov=True).get_updates(netD.trainable_weights, [], d_loss)
-netD_train = K.function([netD_real_input, noisev, ϵ_input],
+netD_train = K.function([netD_real_input, noisev, K.learning_phase()],
                         [loss_real, loss_fake, d_loss],
                         d_training_updates)
 g_training_updates = SGD(lr=0.0005, momentum=0.9, nesterov=True).get_updates(netG.trainable_weights, [], g_loss)
-netG_train = K.function([noisev], [g_loss], g_training_updates)
+netG_train = K.function([noisev, K.learning_phase()], [g_loss], g_training_updates)
 
 # Define Logs and Parameters
 inceps_score_log = []
@@ -111,7 +107,7 @@ for epoch in range(niter):
             real_data = X_train[np.random.choice(range(len(X_train)), size=batch_size)]
             noise = np.random.normal(size=(batch_size, nz))
             ϵ = np.random.rand(batch_size, 1, 1, 1)
-            errD_real, errD_fake, errD = netD_train([real_data, noise, ϵ])
+            errD_real, errD_fake, errD = netD_train([real_data, noise, True])
 
         if gen_iterations % 50 == 0:
             fake = netG.predict(fixed_noise)
@@ -132,7 +128,7 @@ for epoch in range(niter):
             plt.savefig(os.path.join('results', 'imgs', 'DCGAN_img_iter_%d.png' % i))
 
         noise = np.random.normal(size=(batch_size, nz))
-        errG, = netG_train([noise])
+        errG, = netG_train([noise, True])
         gen_iterations += 1
 
         records.append([errG, errD, errD_real, errD_fake])
