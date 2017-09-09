@@ -120,10 +120,10 @@ for epoch in range(niter):
             confidence_log.append(mean_confidence)
             class__log.append(class_entropy)
             print('[%d/%d][%d/%d][%d]\n'
-                  'Loss_G:%f \t Loss_D:%f \t D_real:%f \t D_fake:%f \n'
+                  'Loss_G:%f \t Loss_D:%f \t \n'
                   'Mean Confidence:%f \t Entropy:%f.'
                   % (epoch, niter, i, batches, gen_iterations,
-                     errG, errD, errD_real, errD_fake,
+                     errG, errD,
                      mean_confidence, class_entropy))
 
         if gen_iterations % 500 == 0:
