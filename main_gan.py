@@ -1,4 +1,5 @@
 import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import numpy as np
 import pandas as pd
 
@@ -23,7 +24,7 @@ import seaborn as sns
 
 sns.set(context='paper', style='white', palette='Set2', font_scale=1, color_codes=False,
         rc={'font.family': 'sans-serif', 'font.serif': ['Palatino'], 'font.sans-serif': ['DejaVu Sans'],
-            'text.usetex': True})
+            'text.usetex': False})
 
 # Prevent  Resource exhausted:OOM error
 config = tf.ConfigProto()
@@ -122,10 +123,21 @@ for epoch in range(niter):
                      errG, errD,
                      mean_confidence, class_entropy))
 
+            x_lim = range(len(confidence_log))
+            confidence_log_np = np.array(confidence_log)
+            class__log_np = np.array(class__log)
+            plt.figure()
+            plt.plot(x_lim, confidence_log, 'r')
+            plt.fill_between(x_lim, confidence_log_np-class__log_np, confidence_log_np+class__log_np)
+            plt.savefig(os.path.join('results', 'imgs', 'mean_confidence_entropy.png'))
+            plt.close()
+
         if gen_iterations % 500 == 0:
+            plt.figure()
             plt.imshow(merge_imgs(fake, 10, 10, transfrom=False)[0])
             plt.axis('off')
             plt.savefig(os.path.join('results', 'imgs', 'DCGAN_img_iter_%d.png' % i))
+            plt.close()
 
         noise = np.random.normal(size=(batch_size, nz))
         errG, = netG_train([noise, True])

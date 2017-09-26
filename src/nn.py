@@ -74,14 +74,15 @@ def WGAN_D(isize, nc, ndf):
     outputs = Flatten()(_)
     return Model(inputs=inputs, outputs=outputs)
 
+
 def DCGAN_G():
     model = Sequential()
-    model.add(Dense(input_dim=100, output_dim=1024))
+    model.add(Dense(units=1024, input_dim=100))
     model.add(Activation('tanh'))
     model.add(Dense(128 * 7 * 7))
     model.add(BatchNormalization())
     model.add(Activation('tanh'))
-    model.add(Reshape((7, 7, 128), input_shape=(128 * 7 * 7,)))
+    model.add(Reshape((128, 7, 7), input_shape=(128 * 7 * 7,)))
     model.add(UpSampling2D(size=(2, 2)))
     model.add(Conv2D(64, (5, 5), padding='same'))
     model.add(Activation('tanh'))
